@@ -1,3 +1,4 @@
-This Project Built With Reaactjs - Typescript - Material UI😉✔️
-You Can See Project With This Link
-https://lovely-zabaione-e98431.netlify.app
+This project is built with React.js, TypeScript, Redux, and Material UI.
+
+You can view the project using this link.
+https://dashboard-rho-woad-44.vercel.app/
