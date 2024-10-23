@@ -1,16 +1,17 @@
-import { Box, Button, Container, Card, TextField, Typography } from '@mui/material'
+import { Box, Container} from '@mui/material'
 import { useState } from 'react';
 import uuid from 'react-uuid';
-import FormUrlControl from '../Components/FormUrlControl'
-import UrlCard from '../Components/UrlCard';
+import AddUrlForm from '../Components/UrlControl/AddUrlForm'
+import UrlCard from '../Components/UrlControl/UrlCard';
 
+interface urlData {name: string, address: string, id: string}
 const UrlControl = () => {
   const currentStorage: any = localStorage.getItem("dashboard")
   const currentStorageJSON = JSON.parse(currentStorage);
   const [currentUrlStorage, setCurrentUrlStorage] = useState(currentStorageJSON.urls)
 
-  const formUrlHandler = (urlName: string, urlAddress: string): void => {
-    const createUrlStructure = {
+  const addUrlHandler = (urlName: string, urlAddress: string): void => {
+    const createUrlStructure: urlData = {
       name: urlName,
       address: urlAddress,
       id: uuid()
@@ -28,8 +29,8 @@ const UrlControl = () => {
     localStorage.setItem('dashboard', JSON.stringify(uppdatedStorage))
   }
 
-  const deleteUrlHandler = (url: any) => {
-   const filteredStorage = currentUrlStorage.filter((item: any) => item.id !== url)
+  const deleteUrlHandler = (currentUrl: urlData) => {
+   const filteredStorage = currentUrlStorage.filter((url: urlData) => url.id !== currentUrl.id)
     const uppdatedStorage: any = {
       ...currentStorageJSON,
       urls: [
@@ -41,9 +42,9 @@ const UrlControl = () => {
   localStorage.setItem('dashboard', JSON.stringify(uppdatedStorage))
   }
 
-  const editUrlHandler = (currentUrl: any, currentName: string, currentAddress: string) => {
-    let currentStorage: any = [...currentUrlStorage];
-    const indexUrl = currentStorage.findIndex((item: any) => item.id == currentUrl.id)
+  const editUrlHandler = (currentUrl: urlData, currentName: string, currentAddress: string) => {
+    let currentStorage: any[] = [...currentUrlStorage];
+    const indexUrl = currentStorage.findIndex((url: urlData) => url.id === currentUrl.id)
     currentStorage[indexUrl] = { name: currentName, address: currentAddress, id: currentStorage[indexUrl].id }
     const uppdatedStorage: any = {
       ...currentStorageJSON,
@@ -59,11 +60,11 @@ const UrlControl = () => {
   return (
     <Container>
       <Box sx={{ marginBottom: '2rem' }}>
-        {currentUrlStorage.map((url: {name: string, address: string, id: string}) => (
+        {currentUrlStorage.map((url: urlData) => (
           <UrlCard key={url.id} currentUrl={url} deleteUrl={deleteUrlHandler} editUrl={editUrlHandler}/>
         ))}
       </Box>
-      <FormUrlControl formUrl={formUrlHandler} />
+      <AddUrlForm formUrl={addUrlHandler} />
     </Container>
   )
 }

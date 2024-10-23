@@ -1,17 +1,19 @@
-import { Box, Button, Grid, TextField, Tooltip } from '@mui/material'
+import { Box, Button, Grid, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
 
-interface FormUrlControlProps {
-    formUrl?: any
+interface EditUrlFormProps {
+    formUrl: Function
+    currentAddress: string
+    currentName: string
 }
 
-const FormUrlControl = (props: FormUrlControlProps) => {
+const EditUrlForm = (props: EditUrlFormProps) => {
     const currentStorage: any = localStorage.getItem("dashboard")
     const currentStorageJSON = JSON.parse(currentStorage);
-    const {formUrl} = props
-    const [ urlName, setUrlName ] = useState('');
-    const [ urlAddress, setUrlAddress ] = useState('');
-    const [formValidate, setFormValidate] = useState(false)
+    const {formUrl, currentAddress, currentName} = props
+    const [ urlName, setUrlName ] = useState(currentName);
+    const [ urlAddress, setUrlAddress ] = useState(currentAddress);
+    const [formValidate, setFormValidate] = useState(true)
     useEffect(() => {
         checkFormValidate()
     }, [urlName, urlAddress])
@@ -22,10 +24,6 @@ const FormUrlControl = (props: FormUrlControlProps) => {
     }
 
     const formControlhandler = () => {
-        const findedIndexAddress = currentStorageJSON.urls.findIndex((item: any) =>item.address == urlAddress)
-        const findedIndexName = currentStorageJSON.urls.findIndex((item: any) =>item.name == urlName)
-        if (findedIndexAddress !== -1 || findedIndexName !== -1) return
-        
         formUrl(urlName, urlAddress)
         setUrlName('')
         setUrlAddress('')
@@ -33,7 +31,7 @@ const FormUrlControl = (props: FormUrlControlProps) => {
 
   return (
     <Grid container gap={1} justifyContent="space-around">
-    <Grid item xs={9}>
+    <Grid item xs={12} md={9}>
       <Box>
         <TextField 
             onChange={(e) => setUrlName(e.target.value)}
@@ -53,24 +51,17 @@ const FormUrlControl = (props: FormUrlControlProps) => {
             sx={{ margin: '.2rem 0' }} />
       </Box>
     </Grid>
-    <Grid item xs={2}>
-        {formValidate ? (
+    <Grid item xs={12} md={2}>
             <Button 
             fullWidth 
             variant='contained' 
             color='primary'
+            disabled={formValidate ? false : true}
             sx={{ margin: '.2rem 0', height: '95%' }} 
-            onClick={() => {formControlhandler()}}>Add URL</Button>
-            ) : (
-            <Tooltip title="Your Forms Is Invalid">
-                <span>
-                    <Button fullWidth variant='contained' sx={{ margin: '.2rem 0', height: '95%' }} disabled>Add URL</Button>
-                </span>
-            </Tooltip>
-        )}
+            onClick={() => {formControlhandler()}}>Edit Url</Button>
     </Grid>
   </Grid>
   )
 }
 
-export default FormUrlControl
+export default EditUrlForm
